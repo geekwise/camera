@@ -1,3 +1,5 @@
+var dom_storage = document.createDocumentFragment();
+
 var create_element = function (element_name, element_attributes) {
     var element = document.createElement(element_name);
     
@@ -13,14 +15,21 @@ var create_element = function (element_name, element_attributes) {
         }
     }
     element.classList.add('offscreen');
-    document.body.appendChild(element);
     
+    dom_storage.appendChild(element);
+
 }
 
 var attach_element = function(element_id,element_parent){
          
     if(element_parent !== null){
-        var child = document.getElementById(element_id);
+        var child = new function(){
+                if(document.getElementById(element_id)){
+                    return document.getElementById(element_id);
+                }else{
+                    return dom_storage.getElementById(element_id);
+                }            
+        }
 
         
         if(child.classList.contains('offscreen')){
@@ -59,7 +68,16 @@ var get_values = function(object){
 
 var set_value = function(element_id,element_attributes){
     
-    var element = document.getElementById(element_id);
+    var element = new function(){
+            
+                if(document.getElementById(element_id)){
+                    return document.getElementById(element_id);
+                }else{
+                    return dom_storage.getElementById(element_id);
+                }            
+        
+    };
+    
     var element_attributes_keys = Object.keys(element_attributes);
     
     var keys = get_keys(element_attributes);
@@ -96,15 +114,10 @@ document.addEventListener('DOMContentLoaded',function(){
                                   
             placeholder:'insert photo',
             type:'file',
-            accept:'audio/*;capture=microphone'
+            accept:'image/*;capture=camera'
         });
     
         attach_element('camera_input','title');
     
-    
-    
-    
-    
-    
-    
+
 });
